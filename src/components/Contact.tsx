@@ -27,6 +27,7 @@ export const Contact: React.FC = () => {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [copiedEmail, setCopiedEmail] = useState(false);
 
   const emailAddress = 'younesalloui55@gmail.com';
@@ -58,37 +59,68 @@ export const Contact: React.FC = () => {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validate()) return;
 
     setIsSubmitting(true);
+    setSubmitError(null);
 
-    // =========================================================================
-    // FRONTEND INTEGRATION NOTE:
-    // To route actual emails to your inbox, connect this handler to a provider
-    // such as Formspree, Resend, EmailJS, or Cloudflare Workers:
-    //
-    // Example Formspree endpoint:
-    // await fetch("https://formspree.io/f/YOUR_FORM_ID", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(formData),
-    // });
-    // =========================================================================
+    const formId = (import.meta.env.VITE_FORMSPREE_FORM_ID || '').trim();
 
-    setTimeout(() => {
+    // If Formspree ID is not configured, inform the user with actionable guidance
+    if (!formId) {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: '',
+      setSubmitError(
+        'Email service is not yet linked. Please add your Formspree Form ID into the .env file (VITE_FORMSPREE_FORM_ID=your_id), or use the button below to email directly.'
+      );
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://formspree.io/f/${formId}`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          _replyto: formData.email,
+        }),
       });
-      setErrors({});
-    }, 800);
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+        });
+        setErrors({});
+      } else {
+        if (data && data.errors && Array.isArray(data.errors)) {
+          const errorMsg = data.errors
+            .map((err: { message?: string }) => err.message)
+            .filter(Boolean)
+            .join(', ');
+          setSubmitError(errorMsg || 'Failed to dispatch inquiry. Please try again or email directly.');
+        } else {
+          setSubmitError(data.error || 'Failed to dispatch inquiry. Please check your Formspree ID or try again.');
+        }
+      }
+    } catch {
+      setSubmitError('Network error connecting to email service. Please check your internet connection or email directly.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCopyEmail = () => {
@@ -228,26 +260,61 @@ export const Contact: React.FC = () => {
               </p>
 
               {isSubmitted ? (
-                <div className="p-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.08] text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(52,211,153,0.3)]">
-                    <CheckCircle2 className="w-6 h-6" />
+                <div className="p-8 rounded-2xl border border-white/10 bg-white/[0.03] text-center space-y-4 animate-in fade-in zoom-in-95 duration-300">
+                  <div className="w-12 h-12 rounded-full bg-white/10 text-white flex items-center justify-center mx-auto border border-white/20">
+                    <CheckCircle2 className="w-6 h-6 text-white" />
                   </div>
                   <h4 className="text-lg font-bold text-white">
-                    Inquiry Prepared Successfully
+                    Inquiry Dispatched Successfully
                   </h4>
                   <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-                    Thank you. Your message details have been validated and saved in client state. You can also send directly to{' '}
-                    <span className="font-mono text-white/70 font-medium">{emailAddress}</span>.
+                    Thank you! Your message has been sent to{' '}
+                    <span className="font-mono text-white font-medium">{emailAddress}</span>. I will review your requirements and respond promptly.
                   </p>
                   <button
-                    onClick={() => setIsSubmitted(false)}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-medium border border-white/10 bg-black/60 hover:border-white/25 text-white/70 transition-colors cursor-pointer"
+                    onClick={() => {
+                      setIsSubmitted(false);
+                      setSubmitError(null);
+                    }}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-mono font-medium border border-white/15 bg-white/5 hover:bg-white/10 hover:border-white/30 text-white transition-colors cursor-pointer"
                   >
                     Send Another Message
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                  {submitError && (
+                    <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-xs text-rose-300 space-y-2.5 animate-in fade-in duration-200">
+                      <div className="flex items-start gap-2.5">
+                        <AlertCircle className="w-4 h-4 text-rose-400 mt-0.5 shrink-0" />
+                        <div className="space-y-1">
+                          <p className="font-medium text-white">{submitError}</p>
+                          <p className="text-slate-300 text-[11px] leading-relaxed">
+                            You can dispatch this message directly via your email client using the button below:
+                          </p>
+                        </div>
+                      </div>
+                      <div className="pt-1 flex flex-wrap items-center gap-2">
+                        <a
+                          href={`mailto:${emailAddress}?subject=${encodeURIComponent(
+                            formData.subject || 'Portfolio Inquiry'
+                          )}&body=${encodeURIComponent(
+                            `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
+                          )}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono text-[11px] transition-colors"
+                        >
+                          Send via Email App
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() => setSubmitError(null)}
+                          className="px-3 py-1.5 rounded-lg border border-white/10 hover:bg-white/5 text-slate-400 text-[11px] font-mono transition-colors cursor-pointer"
+                        >
+                          Dismiss
+                        </button>
+                      </div>
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Name Field */}
                     <div>
@@ -359,7 +426,7 @@ export const Contact: React.FC = () => {
                     {isSubmitting ? (
                       <>
                         <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
-                        <span>Validating Message...</span>
+                        <span>Dispatching Inquiry...</span>
                       </>
                     ) : (
                       <>
