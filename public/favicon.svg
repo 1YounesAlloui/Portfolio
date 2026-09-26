@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4" />
+      <stop offset="50%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+  </defs>
+  <rect width="100" height="100" rx="24" fill="#0a0d14" />
+  <path d="M50 16 L84 50 L50 84 L16 50 Z" stroke="url(#grad)" stroke-width="4" fill="none" opacity="0.6"/>
+  <path d="M50 26 L74 50 L50 74 L26 50 Z" stroke="url(#grad)" stroke-width="2" fill="rgba(6, 182, 212, 0.08)"/>
+  <text x="50" y="58" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="28" font-weight="700" fill="#ffffff" text-anchor="middle">AY</text>
+</svg>

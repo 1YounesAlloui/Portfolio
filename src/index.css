@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg:           #080a0f;
+    --glass-bg:     rgba(14, 16, 22, 0.70);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-hover:  rgba(255, 255, 255, 0.14);
+    --text:         #f0f2f5;
+    --muted:        #8b909a;
+    --accent:       rgba(255, 255, 255, 0.82);
+  }
+
+  html { color-scheme: dark; }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+
+  ::selection {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+}
+
+/* ── Glass Panel ─────────────────────────────────────────── */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.glass-panel:hover {
+  border-color: var(--glass-hover);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.70),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ── Glass Nav ───────────────────────────────────────────── */
+.glass-nav {
+  background: rgba(8, 10, 15, 0.85);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
+}
+
+/* ── Subtle Grid ─────────────────────────────────────────── */
+.architectural-grid {
+  background-size: 44px 44px;
+  background-image:
+    linear-gradient(to right,  rgba(255,255,255,0.018) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.018) 1px, transparent 1px);
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 9999px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.24); }
+
+/* ── Reduced Motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
