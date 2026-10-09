@@ -48,7 +48,7 @@ export const Projects: React.FC = () => {
                 Full-Stack Software Engineer
               </h3>
               <p className="text-sm text-slate-300 leading-relaxed">
-                I have worked on multiple hybrid applications and commercial web sites.
+                I have worked on multiple mobile/desktop applications and commercial web sites.
               </p>
             </div>
             <div className="shrink-0 p-4 rounded-2xl bg-black/60 border border-white/10 flex flex-col gap-2 font-mono text-xs text-white/40">
