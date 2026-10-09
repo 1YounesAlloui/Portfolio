@@ -138,10 +138,10 @@ export const Contact: React.FC = () => {
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-mono font-semibold tracking-wider text-white/40 uppercase mb-2">
               <span className="w-1.5 h-1.5 rounded-full bg-white/40" />
-              05 // Direct Communication
+              04 // Direct Communication
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-              Let's Discuss Your Next Build
+              Let's Discuss Your Idea
             </h2>
           </div>
           <p className="text-sm sm:text-base text-slate-400 max-w-md">
@@ -238,14 +238,6 @@ export const Contact: React.FC = () => {
                   </span>
                 </a>
               </div>
-
-              {/* Technical Notice */}
-              <div className="mt-8 pt-6 border-t border-white/10">
-                <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Timezone: Central European / GMT+1</span>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -253,7 +245,7 @@ export const Contact: React.FC = () => {
           <div className="lg:col-span-7">
             <div className="glass-panel p-6 sm:p-8 rounded-3xl">
               <h3 className="text-lg font-bold text-white mb-2">
-                Send an Inquiry
+                Send me an email
               </h3>
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
                 Fill in the parameters of your project or technical inquiry.
@@ -326,7 +318,7 @@ export const Contact: React.FC = () => {
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        placeholder="e.g. Alex Morgan"
+                        placeholder="e.g. younes alloui"
                         className={`w-full px-4 py-3 rounded-xl text-sm bg-black/50 border ${
                           errors.name
                             ? 'border-rose-500/80 focus:ring-rose-500/30'
@@ -351,7 +343,7 @@ export const Contact: React.FC = () => {
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        placeholder="e.g. alex@example.com"
+                        placeholder="e.g. name@example.com"
                         className={`w-full px-4 py-3 rounded-xl text-sm bg-black/50 border ${
                           errors.email
                             ? 'border-rose-500/80 focus:ring-rose-500/30'
@@ -431,7 +423,7 @@ export const Contact: React.FC = () => {
                     ) : (
                       <>
                         <Send className="w-3.5 h-3.5" />
-                        <span>Dispatch Inquiry</span>
+                        <span>Sending Inquiry</span>
                       </>
                     )}
                   </button>
